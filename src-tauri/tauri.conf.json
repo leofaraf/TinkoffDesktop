@@ -12,11 +12,7 @@
   },
   "tauri": {
     "allowlist": {
-      "all": false,
-      "shell": {
-        "all": true,
-        "open": true
-      }
+      "all": true
     },
     "bundle": {
       "active": true,
@@ -31,23 +27,7 @@
       ]
     },
     "security": {
-      "csp": null,
-      "dangerousUseHttpScheme": true,
-      "dangerousDisableAssetCspModification": true,
-      "dangerousRemoteDomainIpcAccess": [
-        {
-          "domain": "tinkoff.ru",
-          "windows": ["main", "root", "block", "global", "function"]
-        },
-        {
-          "domain": "www.tinkoff.ru",
-          "windows": ["main", "root", "block", "global", "function"]
-        },
-        {
-          "domain": "business.tinkoff.ru",
-          "windows": ["main", "root", "block", "global", "function" ]
-        }
-      ]
+      "csp": null
     },
     "windows": [
       {

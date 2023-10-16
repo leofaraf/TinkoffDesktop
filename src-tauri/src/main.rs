@@ -2,14 +2,38 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-#[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
-}
+
+use std::thread;
+use std::thread::sleep;
+use std::time::Duration;
+use tauri::ipc::RemoteDomainAccessScope;
+use tauri::Manager;
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![greet])
+        .setup(|app| {
+            app.ipc_scope().configure_remote_access(
+                RemoteDomainAccessScope::new("www.tinkoff.ru")
+                    .add_window("main")
+                    .enable_tauri_api()
+            );
+            let window = app.get_window("main").expect("window not found");
+
+            window.on("webview:load-commit", move |_| {
+                // Вставьте JavaScript, который попытается перехватить и изменить поведение _blank
+                window.eval(
+                    r#"
+                    (function() {
+                        var links = document.getElementsByTagName('a');
+                        for (var i = 0; i < links.length; i++) {
+                            links[i].target = '_self';
+                        }
+                    })();
+                    "#,
+                ).unwrap();
+            });
+            Ok(())
+        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
